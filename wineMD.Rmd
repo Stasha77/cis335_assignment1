@@ -13,11 +13,12 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Data set downloaded from Kaggle: https://www.kaggle.com/zynicide/wine-reviews
 
-```{r, echo=FALSE}
+```{r read in data, include=FALSE}
 wineData <- readr::read_csv(here::here("data","winemag-data-130k-v2.csv"))
 ```
 
 
 ## Part 3
 
-why data folder not there
+There are 14 variables. Listed as follows:
+|   country   |   nominal   |
