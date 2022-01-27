@@ -1,8 +1,7 @@
 ---
 title: "CIS 335: Assignment 1"
 author: "Stella Sterling"
-output: 
-  pdf_document
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
@@ -50,7 +49,8 @@ There are 13 variables:
 
 ## Part 4
 
-```{r}
+```{r mode func, include=FALSE}
+#function for mode, is mode not a thing in r??
 Mode <- function(x) {
   ux <- unique(x)
   ux[which.max(tabulate(match(x, ux)))]
@@ -60,16 +60,26 @@ Mode <- function(x) {
 
 Points and price are the only numeric variables.
 
-```{r part 4 points}
+```{r part_4 points, echo=FALSE}
 wineData %>% 
   summarize(
     mean = mean(points),
     median = median(points),
-    mode = Mode(points),
-    ) %>% 
-  kable()
+    mode = Mode(points)) %>% 
+  kable(caption="Summary Stats for Points") %>% 
+  kable_minimal(full_width=F)
 ```
 
+```{r part_4 price, echo=FALSE}
+wineData %>% 
+  filter(!is.na(price)) %>% 
+  summarize(
+    mean = mean(price),
+    median = median(price),
+    mode = Mode(price)) %>% 
+  kable(caption="Summary Stats for Price") %>% 
+  kable_minimal(full_width=F)
+```
 
 
 
