@@ -2,7 +2,10 @@
 title: "CIS 335: Assignment 1"
 author: "Stella Sterling"
 date: "02/06/2022"
-output: pdf_document
+output: 
+  pdf_document:
+    latex_engine: xelatex
+mainfont: "Times New Roman"
 ---
 
 ```{r setup, include=FALSE}
@@ -20,5 +23,4 @@ wineData <- readr::read_csv(here::here("data","winemag-data-130k-v2.csv"))
 
 ## Part 3
 
-There are 14 variables. Listed as follows:
-|   country   |   nominal   |
+There are 14 variables.
