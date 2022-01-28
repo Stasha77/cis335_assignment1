@@ -65,9 +65,16 @@ wineData %>%
   summarize(
     mean = mean(points),
     median = median(points),
-    mode = Mode(points)) %>% 
+    mode = Mode(points),
+    IQR = IQR(points)) %>% 
   kable(caption="Summary Stats for Points") %>% 
   kable_minimal(full_width=F)
+```
+
+```{r points hist}
+wineData %>% 
+  ggplot(aes(points)) +
+  geom_histogram()
 ```
 
 ```{r part_4 price, echo=FALSE}
@@ -81,8 +88,11 @@ wineData %>%
   kable_minimal(full_width=F)
 ```
 
-
-
+```{r price hist}
+wineData %>% 
+  ggplot(aes(price)) +
+  geom_histogram()
+```
 
 
 
