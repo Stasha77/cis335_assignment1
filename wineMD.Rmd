@@ -71,11 +71,14 @@ wineData %>%
   kable_minimal(full_width=F)
 ```
 
-```{r points hist}
+```{r points hist, echo=FALSE}
 wineData %>% 
+  filter(!is.na(points)) %>% 
   ggplot(aes(points)) +
   geom_histogram()
 ```
+
+Points are looking normal.
 
 ```{r part_4 price, echo=FALSE}
 wineData %>% 
@@ -88,13 +91,14 @@ wineData %>%
   kable_minimal(full_width=F)
 ```
 
-```{r price hist}
+```{r price hist, echo=FALSE}
 wineData %>% 
+  filter(!is.na(price)) %>% 
   ggplot(aes(price)) +
   geom_histogram()
 ```
 
-
+Ouch. Price is very right skewed. I'm assuming there's a major outlier in the $4000 range. 
 
 
 
