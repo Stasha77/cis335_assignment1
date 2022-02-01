@@ -15,32 +15,34 @@ library(kableExtra)
 ```
 
 
-## Part 1 & 2
+### Part 1 & 2
 
-```{r read in data, echo=FALSE}
+Data downloaded from Kaggle: https://www.kaggle.com/rajyellow46/wine-quality
+
+```{r read in data, include=FALSE}
 wineQual <- readr::read_csv(here::here("data","winequalityN.csv"))
 ```
 
 
-## Part 3
+### Part 3
 
 There are 13 variables: 
 
 | Name    | Attribute   |
 |---------|-------------|
-| country | nominal   |
-| description | nominal |
-| designation | nominal |
-| points | numeric (ratio) |
-| price | numeric (ratio) |
-| province | nominal |
-| region_1 | nominal |
-| region_2 | nominal |
-| taster_name | nominal |
-| taster_twitter_handle | nominal |
-| title | nominal |
-| variety | nominal |
-| winery | nominal |
+| `type` | nominal   |
+| `fixed acidity` | numeric (ratio) |
+| `volatile acidity` | numeric (ratio) |
+| `citric acid` | numeric (ratio) |
+| `residual sugar` | numeric (ratio) |
+| `chlorides` | numeric (ratio) |
+| `free sulfur dioxide` | numeric (ratio) |
+| `total sulfur dioxide` | numeric (ratio) |
+| `density` | numeric (ratio) |
+| `pH` | numeric (interval) |
+| `sulphates` | numeric (ratio) |
+| `alcohol` | numeric (ratio) |
+| `quality` | numeric (ratio) |
 
 
 ## Part 4
@@ -54,9 +56,9 @@ Mode <- function(x) {
 ```
 
 
-Looking at quality points, 'quality': 
+##### Looking at quality points, `quality`: 
 
-```{r sumstat quality, echo=FALSE}
+```{r sumstat points, echo=FALSE}
 wineQual %>% 
   summarize(
     mean = mean(quality),
@@ -69,34 +71,74 @@ wineQual %>%
 
 ```{r points hist, echo=FALSE}
 wineQual %>% 
-  #filter(!is.na(points)) %>% 
   ggplot(aes(quality)) +
-  geom_histogram()
+  ggtitle("Quality Points Histogram") +
+  geom_histogram(binwidth=.5, fill="salmon")
 ```
 
-Points are looking normal.
+Appears normal; maybe a slight right skew.
 
-```{r part_4 price, echo=FALSE}
-wineData %>% 
-  filter(!is.na(price)) %>% 
+##### Looking at fixed acidity, `fixed acidity`: 
+
+```{r sumstat fixed acid, echo=FALSE}
+wineQual %>% 
+  filter(!is.na(`fixed acidity`)) %>% 
   summarize(
-    mean = mean(price),
-    median = median(price),
-    mode = Mode(price)) %>% 
-  kable(caption="Summary Stats for Price") %>% 
+    mean = mean(`fixed acidity`),
+    median = median(`fixed acidity`),
+    mode = Mode(`fixed acidity`),
+    IQR = IQR(`fixed acidity`)) %>% 
+  kable(caption="Summary Stats for Fixed Acidity") %>% 
   kable_minimal(full_width=F)
 ```
 
-```{r price hist, echo=FALSE}
-wineData %>% 
-  filter(!is.na(price)) %>% 
-  ggplot(aes(price)) +
-  geom_histogram()
+```{r fixed acid hist, echo=FALSE}
+wineQual %>% 
+  filter(!is.na(`fixed acidity`)) %>%
+  ggplot(aes(`fixed acidity`)) +
+  ggtitle("Fixed Acidity Histogram") +
+  geom_histogram(binwidth=.5, fill="salmon")
 ```
 
-Ouch. Price is very right skewed. I'm assuming there's a major outlier in the $4000 range. 
+Low-moderate right skew.
+
+##### Looking at alcohol content, `alcohol`:
+
+```{r sumstat alcohol, echo=FALSE}
+wineQual %>% 
+  filter(!is.na(alcohol)) %>% 
+  summarize(
+    mean = mean(alcohol),
+    median = median(alcohol),
+    mode = Mode(alcohol),
+    IQR = IQR(alcohol)) %>% 
+  kable(caption="Summary Stats for Alcohol Content") %>% 
+  kable_minimal(full_width=F)
+```
+
+```{r alcohol hist, echo=FALSE}
+wineQual %>% 
+  filter(!is.na(alcohol)) %>%
+  ggplot(aes(alcohol)) +
+  ggtitle("Alcohol Content Histogram") +
+  geom_histogram(binwidth=.5, fill="salmon")
+```
+
+Highly right-skewed.
+
+### Part 4
+
+There appears to be outliers certainly looking at the histograms of the fixed acidity and alcohol content. I computed the IQR for those two variables and quality points in the summary statistics tables above.
+
+For `quality` the mean = ~5.82 and the IQR = 1.
+
+```{r}
+5.82-1.5
+5.82+1.5
+```
 
 
+This means that values less than 4.32 and greater than 7.32 are considered outliers. Quality points are only in whole numbers, so I would consider values less than 4 and greater than 8 outliers. The mininum value is 3 and the maxinum is 9
 
 
 
