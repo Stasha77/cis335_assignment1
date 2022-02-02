@@ -42,7 +42,7 @@ There are 13 variables:
 | `pH` | numeric (interval) |
 | `sulphates` | numeric (ratio) |
 | `alcohol` | numeric (ratio) |
-| `quality` | numeric (ratio) |
+| `quality` | numeric (ratio), discrete could also be considered categorical |
 
 
 ### Part 4
@@ -161,9 +161,9 @@ wineQual %>%
 Looks better with these removed, however may consider checking out transformations before removing outliers. This is quite a large data set so it doesn't hurt so much to remove this amount of observations (removed about a 1000).
 
 ```{r}
-wineQual %>% 
-  ggplot(aes(x=`fixed acidity`, y=quality)) +
-  geom_point()
+wineQual <- wineQual %>% 
+  filter(`fixed acidity`>5.27,
+         `fixed acidity`<9.17)
 ```
 
 
@@ -177,12 +177,31 @@ wineQual %>%
 Minor outliers would be less than 7.79 and greater than 13.19. This only removes about 100 observations so I would likely not include these outliers. 
 
 ```{r, include=FALSE}
-wineQual %>% 
+wineQual <- wineQual %>% 
   filter(alcohol>7.79,
          alcohol<13.19)
-#6,394
 ```
 
+### Part 6
+
+alcohol content (`alcohol`) vs `fixed acidity`
+
+```{r}
+wineQual %>% 
+  filter(!is.na(`fixed acidity`)) %>% 
+  ggplot(aes(x=`fixed acidity`, y=alcohol)) +
+  geom_point()
+```
+
+alcohol content (`alcohol content`) vs ph level (`pH`)
+
+```{r}
+wineQual %>%
+  ggplot(aes(x=pH, y=alcohol)) +
+  geom_point()
+```
+
+Neither of these look correlated.
 
 
 
