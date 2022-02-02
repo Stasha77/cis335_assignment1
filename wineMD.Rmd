@@ -45,7 +45,7 @@ There are 13 variables:
 | `quality` | numeric (ratio) |
 
 
-## Part 4
+### Part 4
 
 ```{r mode func, include=FALSE}
 #function for mode, is mode not a thing in r??
@@ -126,19 +126,63 @@ wineQual %>%
 
 Highly right-skewed.
 
-### Part 4
+### Part 5
 
 There appears to be outliers certainly looking at the histograms of the fixed acidity and alcohol content. I computed the IQR for those two variables and quality points in the summary statistics tables above.
 
-For `quality` the mean = ~5.82 and the IQR = 1.
+##### For `quality` the mean = ~5.82 and the IQR = 1.
 
-```{r}
+```{r quality IQR}
+# minor outlier = + or - IQR*1.5; 1(1.5) = 1.5
 5.82-1.5
 5.82+1.5
 ```
 
 
-This means that values less than 4.32 and greater than 7.32 are considered outliers. Quality points are only in whole numbers, so I would consider values less than 4 and greater than 8 outliers. The mininum value is 3 and the maxinum is 9
+This means that values less than 4.32 and greater than 7.32 are considered outliers. Quality points are only in whole numbers, so I would consider values less than 4 and greater than 8 minor outliers. The minimum value is 3 and the maximum is 9 for quality points; these values are few and barely minor outliers so I wouldn't remove these observations.
+
+##### For `fixed acidity` the mean = ~7.22 and the IQR = 1.3.
+
+```{r fixed acidity IQR}
+7.22 - 1.5*1.3
+7.22 + 1.5*1.3
+```
+
+Values less than 5.27 and greater than 9.17 considered minor outliers. What would the data look like with these removed?
+
+```{r, echo=FALSE}
+wineQual %>% 
+  filter(`fixed acidity`>5.27,
+         `fixed acidity`<9.17) %>% 
+  ggplot(aes(`fixed acidity`)) +
+  geom_histogram(binwidth=.2, fill="salmon")
+```
+
+Looks better with these removed, however may consider checking out transformations before removing outliers. This is quite a large data set so it doesn't hurt so much to remove this amount of observations (removed about a 1000).
+
+```{r}
+wineQual %>% 
+  ggplot(aes(x=`fixed acidity`, y=quality)) +
+  geom_point()
+```
+
+
+##### For `alcohol` the mean = ~10.49 and the IQR = 1.8.
+
+```{r alcohol IQR}
+10.49 - 1.5*1.8
+10.49 + 1.5*1.8
+```
+
+Minor outliers would be less than 7.79 and greater than 13.19. This only removes about 100 observations so I would likely not include these outliers. 
+
+```{r, include=FALSE}
+wineQual %>% 
+  filter(alcohol>7.79,
+         alcohol<13.19)
+#6,394
+```
+
 
 
 
