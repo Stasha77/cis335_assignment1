@@ -1,11 +1,11 @@
 ---
-title: "CIS 335: Assignment 1"
+title: 'CIS 335: Assignment 1'
 author: "Stella Sterling"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, fig.pos = "!H", out.extra = "")
 ```
 
 ```{r load packages, include=FALSE}
@@ -44,7 +44,6 @@ There are 13 variables:
 | `alcohol` | numeric (ratio) |
 | `quality` | numeric (ratio), discrete could also be considered categorical |
 
-
 ### Part 4
 
 ```{r mode func, include=FALSE}
@@ -58,7 +57,7 @@ Mode <- function(x) {
 
 ##### Looking at quality points, `quality`: 
 
-```{r sumstat points, echo=FALSE}
+```{r sumstat quality, echo=FALSE}
 wineQual %>% 
   summarize(
     mean = mean(quality),
@@ -69,14 +68,14 @@ wineQual %>%
   kable_minimal(full_width=F)
 ```
 
-```{r points hist, echo=FALSE}
+```{r quality hist, echo=FALSE, fig.align='center'}
 wineQual %>% 
   ggplot(aes(quality)) +
   ggtitle("Quality Points Histogram") +
   geom_histogram(binwidth=.5, fill="salmon")
 ```
 
-Appears normal; maybe a slight right skew.
+Appears normal; maybe a slight right skew. Will likely treat this as nominal.
 
 ##### Looking at fixed acidity, `fixed acidity`: 
 
@@ -92,7 +91,7 @@ wineQual %>%
   kable_minimal(full_width=F)
 ```
 
-```{r fixed acid hist, echo=FALSE}
+```{r fixed acid hist, echo=FALSE, fig.align='center'}
 wineQual %>% 
   filter(!is.na(`fixed acidity`)) %>%
   ggplot(aes(`fixed acidity`)) +
@@ -100,7 +99,7 @@ wineQual %>%
   geom_histogram(binwidth=.5, fill="salmon")
 ```
 
-Low-moderate right skew.
+Moderate-high right skew.
 
 ##### Looking at alcohol content, `alcohol`:
 
@@ -116,7 +115,7 @@ wineQual %>%
   kable_minimal(full_width=F)
 ```
 
-```{r alcohol hist, echo=FALSE}
+```{r alcohol hist, echo=FALSE, fig.align='center'}
 wineQual %>% 
   filter(!is.na(alcohol)) %>%
   ggplot(aes(alcohol)) +
@@ -148,24 +147,18 @@ This means that values less than 4.32 and greater than 7.32 are considered outli
 7.22 + 1.5*1.3
 ```
 
-Values less than 5.27 and greater than 9.17 considered minor outliers. What would the data look like with these removed?
+Values less than 5.27 and greater than 9.17 considered minor outliers. Lots of observations would be removed (~1000). Maybe I would increase my multiplier to 3 and remove major outliers if any? What would the data look like with the minor outliers removed?
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, fig.align='center'}
 wineQual %>% 
   filter(`fixed acidity`>5.27,
          `fixed acidity`<9.17) %>% 
   ggplot(aes(`fixed acidity`)) +
+  ggtitle("Fixed Acidity Histogram") +
   geom_histogram(binwidth=.2, fill="salmon")
 ```
 
-Looks better with these removed, however may consider checking out transformations before removing outliers. This is quite a large data set so it doesn't hurt so much to remove this amount of observations (removed about a 1000).
-
-```{r}
-wineQual <- wineQual %>% 
-  filter(`fixed acidity`>5.27,
-         `fixed acidity`<9.17)
-```
-
+Looks better with these removed, however may consider checking out transformations before removing outliers. This is quite a large data set so I'm not too worried about removing so many observations...
 
 ##### For `alcohol` the mean = ~10.49 and the IQR = 1.8.
 
@@ -174,34 +167,52 @@ wineQual <- wineQual %>%
 10.49 + 1.5*1.8
 ```
 
-Minor outliers would be less than 7.79 and greater than 13.19. This only removes about 100 observations so I would likely not include these outliers. 
-
-```{r, include=FALSE}
-wineQual <- wineQual %>% 
-  filter(alcohol>7.79,
-         alcohol<13.19)
-```
+Minor outliers would be less than 7.79 and greater than 13.19. This is only about 100 observations and they are pretty close to the edge so I would keep them. 
 
 ### Part 6
 
-alcohol content (`alcohol`) vs `fixed acidity`
+##### Comparing alcohol content (`alcohol`) and `fixed acidity`:
 
-```{r}
+```{r alcoholVacidity scatter, echo=FALSE, fig.align='center'}
 wineQual %>% 
   filter(!is.na(`fixed acidity`)) %>% 
-  ggplot(aes(x=`fixed acidity`, y=alcohol)) +
-  geom_point()
+  ggplot(aes(x=`fixed acidity`, y=alcohol, color=type)) +
+  ggtitle("Alcohol Content vs Fixed Acidity Scatterplot") +
+  geom_point(alpha=0.3)
 ```
 
-alcohol content (`alcohol content`) vs ph level (`pH`)
+A low-moderate negative correlation. Outliers are definitely an issue. I've colored the points for fun because I think in the future it would be cool to see the differences between red and white wines.
 
-```{r}
+##### Comparing alcohol content (`alcohol content`) and ph level (`pH`):
+
+```{r alcoholVpH scatter, echo=FALSE, warning=FALSE, fig.align='center'}
 wineQual %>%
-  ggplot(aes(x=pH, y=alcohol)) +
-  geom_point()
+  ggplot(aes(x=pH, y=alcohol, color=type)) +
+  ggtitle("Alcohol Content vs pH Level Scatterplot") +
+  geom_point(alpha=0.3)
 ```
 
-Neither of these look correlated.
+Not seeing much correlation here.
 
+### Part 7
 
+```{r quality boxplot, echo=FALSE, fig.align='center'}
+wineQual %>% 
+  ggplot(aes(quality)) +
+  ggtitle("Quality Points Boxplot") +
+  geom_boxplot(fill="salmon")
+```
 
+```{r fixed acidity boxplot, echo=FALSE, warning=FALSE, fig.align='center'}
+wineQual %>% 
+  ggplot(aes(`fixed acidity`)) +
+  ggtitle("Fixed Acidity Boxplot") +
+  geom_boxplot(fill="salmon")
+```
+
+```{r alcohol boxplot, echo=FALSE, fig.align='center'}
+wineQual %>% 
+  ggplot(aes(alcohol)) +
+  ggtitle("Alcohol Content Boxplot") +
+  geom_boxplot(fill="salmon")
+```
